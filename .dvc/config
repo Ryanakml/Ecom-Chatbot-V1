@@ -1,0 +1,4 @@
+[core]
+    remote = minio
+['remote "minio"']
+    url = http://localhost:${MINIO_API_PORT}

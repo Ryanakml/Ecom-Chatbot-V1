@@ -1,0 +1,6 @@
+outs:
+- md5: 0d2d922fbd544d5fde4fbf396d03a44b.dir
+  size: 19445625
+  nfiles: 274
+  hash: md5
+  path: pandas_docs
