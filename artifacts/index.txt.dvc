@@ -1,0 +1,5 @@
+outs:
+- md5: 292be3aae0554bff1f2e71c1cf1d4371
+  size: 3725
+  hash: md5
+  path: index.txt
