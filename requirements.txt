@@ -5,3 +5,13 @@ dvc[all]>=3.0.0
 requests>=2.31.0
 beautifulsoup4>=4.12.0
 python-dotenv>=1.0.0
+
+# Preprocessing
+pandas>=2.1.0
+numpy>=1.24.0
+
+# Orchestration
+prefect>=2.14.0
+
+# Data Streaming
+kafka-python>=2.0.2
