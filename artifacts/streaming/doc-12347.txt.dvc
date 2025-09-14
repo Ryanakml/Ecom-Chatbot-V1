@@ -1,0 +1,5 @@
+outs:
+- md5: 9cc5d95d486def010a39e47e71c138dd
+  size: 11
+  hash: md5
+  path: doc-12347.txt
