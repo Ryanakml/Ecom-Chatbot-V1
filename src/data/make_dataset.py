@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
+# Scraping pandas documentation script
 def scrape_pandas_docs():
     """Scrapes the pandas User Guide and saves content to text files."""
     base_url = "https://pandas.pydata.org/docs/user_guide/"
