@@ -1,4 +1,7 @@
 [core]
     remote = minio
 ['remote "minio"']
-    url = http://localhost:${MINIO_API_PORT}
+    url = s3://mlops-dvc/dvcstore
+    endpointurl = http://localhost:9000
+    access_key_id = minioadmin
+    secret_access_key = minioadmin
