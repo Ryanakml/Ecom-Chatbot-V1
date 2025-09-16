@@ -15,3 +15,16 @@ prefect>=2.14.0
 
 # Data Streaming
 kafka-python>=2.0.2
+
+# Text Processing
+langchain>=0.2.0
+sentence-transformers>=2.2.0
+
+# Experiment Tracking & Model Management
+mlflow>=2.9.0
+
+# Vector Index
+faiss-cpu>=1.7.4
+
+# Elasticsearch
+elasticsearch>=8.10.0
