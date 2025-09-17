@@ -27,4 +27,4 @@ mlflow>=2.9.0
 faiss-cpu>=1.7.4
 
 # Elasticsearch
-elasticsearch>=8.10.0
+elasticsearch>=8.5.3
