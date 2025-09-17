@@ -8,6 +8,9 @@ from prefect import task, flow
 # Data preprocessing
 from data_processing import chunk_documents_recursively, generate_embeddings_st
 
+# Elasticsearch
+from indexing import index_in_elasticsearch_task
+
 # Set MLflow tracking URI - Fixed the default port to match your setup
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5001"))
 
@@ -43,11 +46,17 @@ def get_latest_data_version(data_path: str) -> list:
     return docs
 
 @task
-def index_in_elasticsearch(chunks: list, embeddings: np.ndarray):
-    """Placeholder for Elasticsearch indexing."""
-    print(f"Indexing {len(chunks)} chunks in Elasticsearch...")
-    # Logic for bulk indexing will be added here
-    pass
+def index_in_elasticsearch(chunks: list, embeddings: np.ndarray, index_name: str = "rag_kb"):
+    """Elasticsearch indexing."""
+    try:
+        success, errors = index_in_elasticsearch_task(chunks, embeddings, index_name)
+        print(f"Elasticsearch indexing completed: {success} documents indexed")
+        if errors:
+            print(f"Indexing errors: {len(errors)}")
+        return success, errors
+    except Exception as e:
+        print(f"Elasticsearch indexing failed: {e}")
+        return 0, [str(e)]
 
 @task
 def build_and_save_faiss_index(embeddings: np.ndarray, output_path: str = "models/faiss_index.bin"):
@@ -77,7 +86,8 @@ def build_and_save_faiss_index(embeddings: np.ndarray, output_path: str = "model
 def data_ingestion_flow(
     chunk_size: int = 1000,
     chunk_overlap: int = 150,
-    embedding_model: str = "all-MiniLM-L6-v2"
+    embedding_model: str = "all-MiniLM-L6-v2",
+    es_index_name: str = "rag_kb"
 ):
     """
     The main flow to ingest and process data, with MLflow tracking.
@@ -100,7 +110,8 @@ def data_ingestion_flow(
         mlflow.log_params({
             "chunk_size": chunk_size,
             "chunk_overlap": chunk_overlap,
-            "embedding_model": embedding_model
+            "embedding_model": embedding_model,
+            "es_index_name": es_index_name
         })
 
         # --- Data Ingestion and Processing ---
@@ -128,7 +139,11 @@ def data_ingestion_flow(
 
         # --- Indexing ---
         faiss_index_path = build_and_save_faiss_index(embeddings)
-        index_in_elasticsearch(chunks, embeddings)
+
+        # Updated Elasticsearch indexing with proper parameters
+        es_success, es_errors = index_in_elasticsearch(chunks, embeddings, es_index_name)
+        mlflow.log_metric("es_indexed_docs", es_success)
+        mlflow.log_metric("es_errors", len(es_errors) if es_errors else 0)
 
         # Log artifacts - check if file exists first
         if os.path.exists(faiss_index_path):
